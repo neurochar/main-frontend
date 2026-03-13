@@ -24,15 +24,14 @@ FROM node:${NODE_VERSION}-slim AS package
 WORKDIR /app
 
 COPY --from=build /app/.output ./.output
-
 RUN rm -rf ./.output/server/node_modules
-
 COPY --from=prod-deps /app/.output/server/node_modules ./.output/server/node_modules
 
-FROM gcr.io/distroless/nodejs20-debian12:nonroot AS runtime
+FROM node:22-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 
 COPY --from=package /app/.output ./.output
 
-CMD [".output/server/index.mjs"]
+USER node
+CMD ["node", ".output/server/index.mjs"]
