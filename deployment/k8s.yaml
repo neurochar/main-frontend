@@ -1,0 +1,78 @@
+# ------------------------------------------------------------
+# ConfigMap приложения backend-app
+# ------------------------------------------------------------
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: frontend-main-config
+    namespace: neurochar
+
+data:
+    TZ: Europe/Moscow
+    NUXT_PUBLIC_API_BASE: https://api.neurochar.ru
+---
+# ------------------------------------------------------------
+# Deployment приложения
+# ------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: frontend-main-app-deployment
+    namespace: neurochar
+
+spec:
+    replicas: 1
+
+    selector:
+        matchLabels:
+            app: frontend-main-app
+
+    template:
+        metadata:
+            labels:
+                app: frontend-main-app
+
+        spec:
+            containers:
+                - name: frontend-main-app
+                  image: __APP_VERSION__
+                  imagePullPolicy: Always
+
+                  ports:
+                      - containerPort: 8080
+
+                  envFrom:
+                      - configMapRef:
+                            name: frontend-main-config
+
+                  readinessProbe:
+                      httpGet:
+                          path: /
+                          port: 8080
+                      initialDelaySeconds: 10
+                      periodSeconds: 360
+                      timeoutSeconds: 10
+
+---
+# ------------------------------------------------------------
+# Service для приложения
+# ------------------------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+    name: frontend-main-app-service
+    namespace: neurochar
+    labels:
+        app: frontend-main-app
+
+spec:
+    type: ClusterIP
+
+    selector:
+        app: frontend-main-app
+
+    ports:
+        - name: http
+          port: 8080
+          targetPort: 8080
+          protocol: TCP
