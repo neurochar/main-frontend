@@ -26,3 +26,4 @@ logs
 deployment/builds/*
 
 docker-compose.yml
+readme.txt

@@ -1,12 +1,14 @@
 <script setup lang="ts">
     import { useModalAlert } from '~/components/shared/modals/Alert/useModalAlert';
     import { useModalErrorsList } from '~/components/shared/modals/ErrorsList/useModalErrorsList';
-    import { StandartErrorList, tryToThrowApiErrors } from '~/shared/errors/errors';
+    import { ApiError, tryToCatchApiErrors } from '~/shared/errors/errors';
     import { checkRegistration } from './api/checkRegistration';
 
     const props = defineProps<{
         id: string;
     }>();
+
+    const api = useApi();
 
     const isLoading = ref(true);
 
@@ -54,7 +56,7 @@
 
             tenantURL.value = result.url;
         } catch (e: unknown) {
-            throw tryToThrowApiErrors(e);
+            throw tryToCatchApiErrors(e);
         }
     };
 
@@ -87,10 +89,22 @@
             isSending.value = true;
 
             try {
-                await makeApiRequest({ ...formData, registrationID: props.id });
+                const res = await api.v1.registrationPublicServiceFinishRegistration({
+                    id: props.id,
+                    payload: {
+                        profileName: formData.profileName,
+                        profileSurname: formData.profileSurname,
+                        tenantTextId: formData.tenantTextID,
+                    },
+                });
+
+                if (res.error !== null) {
+                    throw res.error;
+                }
+
                 successModal.open();
             } catch (e) {
-                if (e instanceof StandartErrorList) {
+                if (e instanceof ApiError) {
                     if (e.textCode in errorCodesToText) {
                         errors.value = [errorCodesToText[e.textCode]!];
                     } else {

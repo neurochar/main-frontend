@@ -1,7 +1,9 @@
 <script setup lang="ts">
     import { useModalAlert } from '~/components/shared/modals/Alert/useModalAlert';
     import { useModalErrorsList } from '~/components/shared/modals/ErrorsList/useModalErrorsList';
-    import { StandartErrorList, tryToThrowApiErrors } from '~/shared/errors/errors';
+    import { ApiError, tryToCatchApiErrors } from '~/shared/errors/errors';
+
+    const api = useApi();
 
     const formData = reactive({
         email: '',
@@ -29,12 +31,15 @@
 
     const makeApiRequest = async (data: IFormData): Promise<void> => {
         try {
-            await useNuxtApp().$apiFetch<{ result: string }>('v1/registration', {
-                method: 'POST',
-                body: data,
+            const res = await api.v1.registrationPublicServiceStartRegistration({
+                email: data.email,
             });
+
+            if (res.error !== null) {
+                throw res.error;
+            }
         } catch (e: unknown) {
-            throw tryToThrowApiErrors(e);
+            throw tryToCatchApiErrors(e);
         }
     };
 
@@ -61,7 +66,7 @@
                 await makeApiRequest({ ...formData });
                 successModal.open();
             } catch (e) {
-                if (e instanceof StandartErrorList) {
+                if (e instanceof ApiError) {
                     if (e.textCode in errorCodesToText) {
                         errors.value = [errorCodesToText[e.textCode]!];
                     } else {

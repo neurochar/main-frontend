@@ -59,10 +59,14 @@ export default defineNuxtConfig({
         '@vueuse/nuxt',
         'nuxt-time',
     ],
+
     vite: {
         build: {
             assetsInlineLimit: 0,
             target: ['es2015'],
+        },
+        optimizeDeps: {
+            include: ['imask', '@vue/devtools-core', '@vue/devtools-kit', 'vue-final-modal'],
         },
     },
     features: {
