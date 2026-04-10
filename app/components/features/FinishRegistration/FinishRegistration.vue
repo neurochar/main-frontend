@@ -134,7 +134,7 @@
 </script>
 
 <template>
-    <div>
+    <div :class="$style.wrapper">
         <div v-if="isLoading">Загрузка...</div>
         <div
             v-if="!isLoading"
@@ -172,7 +172,7 @@
             <div :class="$style.button">
                 <button
                     type="button"
-                    class="button_1"
+                    class="button_1 big"
                     @click="sendForm"
                 >
                     Зарегистрироваться
@@ -199,7 +199,7 @@
 
             > .desc {
                 font-size: 16px;
-                line-height: 1.7;
+                line-height: 2;
                 margin-bottom: 20px;
                 font-weight: 100;
 

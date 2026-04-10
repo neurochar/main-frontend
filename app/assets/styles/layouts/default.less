@@ -1,6 +1,90 @@
 @import '@styles/includes';
 
+@default-header-height-value: 80px;
+@default-header-height-value-sm: 60px;
+
+#header.default {
+    > .spacer {
+        height: @default-header-height-value;
+
+        .width-size-sm-less({
+            height: @default-header-height-value-sm;
+        });
+    }
+
+    > .wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 100;
+        height: @default-header-height-value;
+        backdrop-filter: blur(12px);
+        background-color: rgba(8, 10, 22, 0.8);
+        border-bottom: 1px solid var(--border-color-1);
+
+        .width-size-sm-less({
+            height: @default-header-height-value-sm;
+        });
+
+        > div {
+            .std-wrapper();
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            height: @default-header-height-value - 1px;
+
+            .width-size-sm-less({
+                height: @default-header-height-value-sm - 1px;
+            });
+
+            > .menu {
+                display: flex;
+                gap: 30px;
+
+                .width-size-less(1000px, {
+                    display: none;
+                });
+
+                > a {
+                    font-size: 14px;
+                    font-weight: 500;
+                    color: var(--font-color-3);
+                    transition: color 0.25s ease;
+
+                    .hover({
+                        color: var(--font-color-3-hover);
+                    });
+                }
+            }
+        }
+    }
+}
+
 main.default {
     margin-bottom: auto;
     box-sizing: border-box;
+}
+
+.default-logo-wrapper {
+    gap: 5px;
+}
+
+.default-logo-n {
+    height: 26px;
+    width: 23px;
+
+    .width-size-sm-less({
+        height: 20px;
+        width: 18px;
+    });
+}
+
+.default-logo-text {
+    font-size: 26px;
+
+    .width-size-sm-less({
+        font-size: 20px;
+    });
 }

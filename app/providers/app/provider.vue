@@ -17,7 +17,6 @@
             return titleChunk ? `${titleChunk}` : toValue(appTitle);
         },
         link: [
-            // --- Стандартные favicon ---
             { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
             { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
             { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
@@ -28,8 +27,6 @@
             { rel: 'icon', type: 'image/png', sizes: '76x76', href: '/favicon-76x76.png' },
             { rel: 'icon', type: 'image/png', sizes: '57x57', href: '/favicon-57x57.png' },
             { rel: 'icon', type: 'image/png', sizes: '70x70', href: '/favicon-70x70.png' },
-
-            // --- Apple Touch Icon ---
             { rel: 'apple-touch-icon', sizes: '114x114', href: '/favicon-114x114.png' },
             { rel: 'apple-touch-icon', sizes: '120x120', href: '/favicon-120x120.png' },
             { rel: 'apple-touch-icon', sizes: '128x128', href: '/favicon-128x128.png' },
@@ -38,10 +35,8 @@
             { rel: 'apple-touch-icon', sizes: '152x152', href: '/favicon-152x152.png' },
             { rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon-180x180.png' },
 
-            // --- PWA ---
             { rel: 'manifest', href: '/manifest.json' },
 
-            // --- MS Tiles ---
             { rel: 'msapplication-config', href: '/browserconfig.xml' },
             { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/favicon-192x192.png' },
             { rel: 'icon', type: 'image/png', sizes: '310x310', href: '/favicon-310x310.png' },
@@ -121,6 +116,46 @@
             document.documentElement.style.setProperty('--modal-content-margin-right', `${scrollbarWidth}px`);
         }
     });
+
+    const initObserver = () => {
+        const elements = document.querySelectorAll<HTMLElement>('.fade-in');
+
+        const observer = new IntersectionObserver(
+            (entries, obs) => {
+                entries.forEach((entry) => {
+                    const el = entry.target as HTMLElement;
+
+                    if (!entry.isIntersecting) return;
+
+                    if (!el.classList.contains('visible')) {
+                        el.classList.add('visible');
+                    }
+
+                    obs.unobserve(el);
+                });
+            },
+            { threshold: 0.2 },
+        );
+
+        elements.forEach((el) => {
+            if (!el.classList.contains('visible')) {
+                observer.observe(el);
+            }
+        });
+    };
+
+    onMounted(() => {
+        initObserver();
+    });
+
+    watch(
+        () => route.fullPath,
+        () => {
+            nextTick(() => {
+                initObserver();
+            });
+        },
+    );
 </script>
 
 <template>

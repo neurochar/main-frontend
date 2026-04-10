@@ -12,7 +12,7 @@
 
 <template>
     <div id="all">
-        <div id="bg"></div>
+        <WidgetHeader layout="default" />
         <main class="default">
             <slot />
         </main>

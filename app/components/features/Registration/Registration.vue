@@ -1,9 +1,12 @@
 <script setup lang="ts">
-    import { useModalAlert } from '~/components/shared/modals/Alert/useModalAlert';
-    import { useModalErrorsList } from '~/components/shared/modals/ErrorsList/useModalErrorsList';
+    import type { UseModalReturnType } from 'vue-final-modal';
     import { ApiError, tryToCatchApiErrors } from '~/shared/errors/errors';
 
     const api = useApi();
+
+    const props = defineProps<{
+        modalObj: () => UseModalReturnType<any>;
+    }>();
 
     const formData = reactive({
         email: '',
@@ -11,17 +14,7 @@
 
     const errors = ref<string[]>([]);
 
-    const successModal = useModalAlert({
-        slot: 'Проверьте свою почту, на нее придет ссылка для активации рабочего пространства.',
-        title: 'Внимание',
-        onConfirm: () => {
-            formData.email = '';
-        },
-    });
-
-    const errorModal = useModalErrorsList({
-        errors,
-    });
+    const step = ref(1);
 
     const isSending = ref(false);
 
@@ -57,14 +50,13 @@
             errors.value.push('E-mail не указан');
         }
 
-        if (errors.value.length) {
-            errorModal.open();
-        } else {
+        if (!errors.value.length) {
             isSending.value = true;
 
             try {
                 await makeApiRequest({ ...formData });
-                successModal.open();
+
+                step.value = 2;
             } catch (e) {
                 if (e instanceof ApiError) {
                     if (e.textCode in errorCodesToText) {
@@ -72,7 +64,6 @@
                     } else {
                         errors.value = e.formHints();
                     }
-                    errorModal.open();
                 }
             } finally {
                 isSending.value = false;
@@ -82,35 +73,77 @@
 </script>
 
 <template>
-    <div :class="$style.form">
-        <div :class="$style.email">
-            <SharedUiInput v-model="formData.email">
-                <template #placeholder> Ваш e-mail<span>*</span> </template>
-            </SharedUiInput>
-        </div>
-        <div :class="$style.button">
-            <button
-                type="button"
-                class="button_1"
-                @click="sendForm"
+    <template v-if="step == 1">
+        <div>
+            <div
+                v-if="errors.length"
+                :class="$style.errors"
             >
-                Зарегистрироваться
-            </button>
+                <template
+                    v-for="(error, i) in errors"
+                    :key="i"
+                >
+                    <div>— {{ error }}</div>
+                </template>
+            </div>
+            <div :class="$style.form">
+                <div :class="$style.email">
+                    <SharedUiInput
+                        v-model="formData.email"
+                        @click="errors = []"
+                    >
+                        <template #placeholder> Ваш e-mail<span>*</span> </template>
+                    </SharedUiInput>
+                </div>
+                <div :class="$style.button">
+                    <button
+                        type="button"
+                        class="button_1 big full"
+                        @click="sendForm"
+                    >
+                        Зарегистрироваться
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
+    </template>
+    <template v-else-if="step == 2">
+        <div :class="$style.inform">
+            <div :class="$style.desc">Проверьте свою почту, на нее придет ссылка для активации рабочего пространства.</div>
+            <div :class="$style.button">
+                <button
+                    type="button"
+                    class="button_1 big full"
+                    @click="props.modalObj().close()"
+                >
+                    ОК
+                </button>
+            </div>
+        </div>
+    </template>
 </template>
 
 <style lang="less" module>
     @import '@styles/includes';
 
+    .errors {
+        font-size: 16px;
+        color: var(--color-stable-red);
+        margin-bottom: 30px;
+    }
+
     .form {
         > .button {
             margin-top: 30px;
             text-align: center;
+        }
+    }
 
-            > button {
-                width: 100%;
-            }
+    .inform {
+        > .desc {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: var(--stable-white-color);
         }
     }
 </style>

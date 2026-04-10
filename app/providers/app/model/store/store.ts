@@ -6,7 +6,7 @@ interface IAppProviderStore {
 
 export function initAppProviderStoreValues() {
     const config: IAppProviderStore = {
-        title: 'Neurochar',
+        title: 'Нейрочар',
     };
 
     return config;

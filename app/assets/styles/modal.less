@@ -81,11 +81,11 @@ html {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: var(--font-color-2);
+    color: var(--stable-white-color);
 
     > .title {
         font-size: 30px;
-        font-weight: bold;
+        font-weight: 500;
         flex-basis: 100%;
     }
 
@@ -100,15 +100,10 @@ html {
             height: 24px;
             mask: url('@/assets/icons/ui/closer.svg') no-repeat center center;
             mask-size: contain;
-            background-color: var(--color-2);
-            border-radius: 3px;
+            background-color: var(--stable-white-color);
             top: 0px;
             transition: background-color 0.25s ease;
             -webkit-tap-highlight-color: transparent;
-
-            .hover({
-                background-color: var(--color-2-hover);
-            });
         }
     }
 
@@ -121,7 +116,7 @@ html {
 
 .modal-default-content {
     margin-top: 30px;
-    color: var(--font-color-2);
+    color: var(--stable-white-color);
 
     .width-size-sm-less({
         margin-top: 20px;

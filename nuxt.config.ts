@@ -121,7 +121,7 @@ export default defineNuxtConfig({
     },
     googleFonts: {
         families: {
-            //'Arsenal SC': [400],
+            Rubik: [300, 400, 500, 600, 700, 900],
         },
     },
 });
