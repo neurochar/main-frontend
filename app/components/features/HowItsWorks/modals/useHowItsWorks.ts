@@ -8,6 +8,7 @@ interface IProps {
 export const useHowItsWorks = (props: IProps) => {
     const modal = useModal({
         component: HowItsWorks,
+
         attrs: {
             title: props.title,
             modalObj: () => modal,

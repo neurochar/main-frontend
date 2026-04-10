@@ -8,7 +8,10 @@
 </script>
 
 <template>
-    <SharedModalsDefaultModal :modal-obj="props.modalObj()">
+    <SharedModalsDefaultModal
+        :modal-obj="props.modalObj()"
+        :click-to-close="true"
+    >
         <SharedModalsDefaultWrapper
             :modal-obj="props.modalObj()"
             :class-name="$style.box_wrapper"

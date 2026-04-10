@@ -32,7 +32,6 @@
         width: 100%;
         aspect-ratio: 16 / 9;
         overflow: hidden;
-        border-radius: 12px;
     }
 
     .video {

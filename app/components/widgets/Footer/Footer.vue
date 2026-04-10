@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-    <footer class="fix_width_on_lock_scroll">
+    <footer>
         <div id="footer">
             <div class="wrapper">
                 <div class="logo">
