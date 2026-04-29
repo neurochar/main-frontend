@@ -79,6 +79,7 @@ export default defineNuxtConfig({
         baseURL: '/',
         head: {
             viewport: 'width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no',
+            meta: [{ name: 'robots', content: 'noindex, nofollow' }],
         },
         pageTransition: {
             name: 'page',
@@ -113,7 +114,7 @@ export default defineNuxtConfig({
         },
     ],
     robots: {
-        sitemap: 'https://neurochar.ru/sitemap.xml',
+        disallow: '/',
     },
     experimental: {
         entryImportMap: false,
