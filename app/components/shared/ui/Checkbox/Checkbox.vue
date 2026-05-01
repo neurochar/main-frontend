@@ -116,7 +116,7 @@
         }
 
         &.round-1 {
-            background-color: var(--bg-color-1);
+            background-color: var(--stable-white-color);
 
             &.selected {
                 //background-color: var(--color-1);

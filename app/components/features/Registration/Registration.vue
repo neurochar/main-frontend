@@ -10,6 +10,7 @@
 
     const formData = reactive({
         email: '',
+        agree: false,
     });
 
     const errors = ref<string[]>([]);
@@ -48,6 +49,10 @@
         errors.value = [];
         if (formData.email.replaceAll(' ', '').length === 0) {
             errors.value.push('E-mail не указан');
+        }
+
+        if (!formData.agree) {
+            errors.value.push('Вы не согласились с условиями');
         }
 
         if (!errors.value.length) {
@@ -95,6 +100,25 @@
                         <template #placeholder> Ваш e-mail<span>*</span> </template>
                     </SharedUiInput>
                 </div>
+                <div :class="$style.agree">
+                    <div :class="$style.check">
+                        <SharedUiCheckbox v-model="formData.agree" />
+                    </div>
+                    <div :class="$style.text">
+                        Я согласен на
+                        <a
+                            href="/agreement.pdf"
+                            target="_blank"
+                            >обработку персональных данных</a
+                        >
+                        и принимаю условия
+                        <a
+                            href="/policy.pdf"
+                            target="_blank"
+                            >Политики конфиденциальности</a
+                        >.
+                    </div>
+                </div>
                 <div :class="$style.button">
                     <button
                         type="button"
@@ -133,6 +157,16 @@
     }
 
     .form {
+        > .agree {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+
+            > .text a {
+                text-decoration: underline;
+            }
+        }
+
         > .button {
             margin-top: 30px;
             text-align: center;
