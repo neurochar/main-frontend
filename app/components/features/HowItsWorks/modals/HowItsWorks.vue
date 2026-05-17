@@ -31,7 +31,7 @@
 
     .box_wrapper {
         width: 100%;
-        max-width: 1000px;
+        max-width: 1300px;
     }
 
     .content {

@@ -11,9 +11,8 @@
         <div :class="$style.videoContainer">
             <video
                 :class="$style.video"
-                src="/demo.mp4"
+                src="/demo_v2.mp4"
                 autoplay
-                muted
                 controls
             />
         </div>
