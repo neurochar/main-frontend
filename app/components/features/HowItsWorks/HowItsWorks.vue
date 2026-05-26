@@ -11,7 +11,7 @@
         <div :class="$style.videoContainer">
             <video
                 :class="$style.video"
-                src="/demo_v2.mp4"
+                src="/demo_v3.mp4"
                 autoplay
                 controls
             />

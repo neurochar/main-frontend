@@ -10,6 +10,14 @@
  * ---------------------------------------------------------------
  */
 
+/** @default "TESTING_ROOM_RESULT_ANALYZE_HIRING_DECISION_UNSPECIFIED" */
+export enum V1TestingRoomResultAnalyzeHiringDecision {
+  TESTING_ROOM_RESULT_ANALYZE_HIRING_DECISION_UNSPECIFIED = "TESTING_ROOM_RESULT_ANALYZE_HIRING_DECISION_UNSPECIFIED",
+  TESTING_ROOM_RESULT_ANALYZE_HIRING_DECISION_HIRE = "TESTING_ROOM_RESULT_ANALYZE_HIRING_DECISION_HIRE",
+  TESTING_ROOM_RESULT_ANALYZE_HIRING_DECISION_HIRE_WITH_CONDITIONS = "TESTING_ROOM_RESULT_ANALYZE_HIRING_DECISION_HIRE_WITH_CONDITIONS",
+  TESTING_ROOM_RESULT_ANALYZE_HIRING_DECISION_DONT_HIRE = "TESTING_ROOM_RESULT_ANALYZE_HIRING_DECISION_DONT_HIRE",
+}
+
 /** @default "TECHNIQUE_ITEM_TYPE_UNSPECIFIED" */
 export enum V1TechniqueItemType {
   TECHNIQUE_ITEM_TYPE_UNSPECIFIED = "TECHNIQUE_ITEM_TYPE_UNSPECIFIED",
@@ -20,6 +28,7 @@ export enum V1TechniqueItemType {
 export enum V1RoomStatus {
   ROOM_STATUS_UNSPECIFIED = "ROOM_STATUS_UNSPECIFIED",
   ROOM_STATUS_NOT_STARTED = "ROOM_STATUS_NOT_STARTED",
+  ROOM_STATUS_STARTED = "ROOM_STATUS_STARTED",
   ROOM_STATUS_FINISHED = "ROOM_STATUS_FINISHED",
 }
 
@@ -37,6 +46,14 @@ export enum V1PersonalityTraitPriority {
   PRESONALITY_TRAIT_PRIORITY_HIGH = "PRESONALITY_TRAIT_PRIORITY_HIGH",
 }
 
+/** @default "LIST_ROOM_SORT_UNSPECIFIED" */
+export enum V1ListRoomsSort {
+  LIST_ROOM_SORT_UNSPECIFIED = "LIST_ROOM_SORT_UNSPECIFIED",
+  LIST_ROOM_SORT_CREATED_AT = "LIST_ROOM_SORT_CREATED_AT",
+  LIST_ROOM_SORT_FINISHED_AT = "LIST_ROOM_SORT_FINISHED_AT",
+  LIST_ROOM_SORT_RESULT_INDEX = "LIST_ROOM_SORT_RESULT_INDEX",
+}
+
 /** @default "GENDER_UNSPECIFIED" */
 export enum V1Gender {
   GENDER_UNSPECIFIED = "GENDER_UNSPECIFIED",
@@ -45,35 +62,39 @@ export enum V1Gender {
 }
 
 export interface CrmPublicServicePatchCandidateBody {
-  payload: V1PatchCandidateRequestPayload;
-  skipVersionCheck: boolean;
+  payload?: V1PatchCandidateRequestPayload;
+  skipVersionCheck?: boolean;
   /** @format int64 */
-  version: string;
+  version?: string;
 }
 
-export interface RoomsPublicServiceFinishRoomBody {
-  payload: V1FinishRoomRequestPayload;
+export interface RoomsPublicServiceAnswerBody {
+  answerValue?: V1AnswerValue;
+  /** @format int32 */
+  questionIndex?: number;
 }
+
+export type RoomsPublicServiceStartRoomBody = object;
 
 export interface TenantPublicServicePatchTenantBody {
-  payload: V1PatchTenantRequestPayload;
-  skipVersionCheck: boolean;
+  payload?: V1PatchTenantRequestPayload;
+  skipVersionCheck?: boolean;
   /** @format int64 */
-  version: string;
+  version?: string;
 }
 
 export interface TestingPublicServicePatchProfileBody {
-  payload: V1PatchProfileRequestPayload;
-  skipVersionCheck: boolean;
+  payload?: V1PatchProfileRequestPayload;
+  skipVersionCheck?: boolean;
   /** @format int64 */
-  version: string;
+  version?: string;
 }
 
 export interface UsersTenantPublicServicePatchAccountBody {
-  payload: V1PatchAccountRequestPayload;
-  skipVersionCheck: boolean;
+  payload?: V1PatchAccountRequestPayload;
+  skipVersionCheck?: boolean;
   /** @format int64 */
-  version: string;
+  version?: string;
 }
 
 /**
@@ -199,18 +220,18 @@ export interface ProtobufAny {
 }
 
 export interface RoomsV1GetRoomResponse {
-  room?: V1Room;
+  room: V1Room;
 }
 
 export interface RpcStatus {
   /** @format int32 */
-  code: number;
+  code?: number;
   details?: ProtobufAny[];
   message?: string;
 }
 
 export interface TestingV1GetRoomResponse {
-  item?: V1TestingRoom;
+  item: V1TestingRoom;
 }
 
 /**
@@ -281,6 +302,10 @@ export interface V1AccountVerifyEmailRequest {
 
 export type V1AccountVerifyEmailResponse = object;
 
+export interface V1AnswerResponse {
+  room: V1Room;
+}
+
 export interface V1AnswerValue {
   boolValue?: boolean;
   /** @format double */
@@ -288,10 +313,6 @@ export interface V1AnswerValue {
   /** @format int64 */
   intValue?: string;
   stringValue?: string;
-}
-
-export interface V1Answers {
-  data?: Record<string, V1AnswerValue>;
 }
 
 export interface V1Candidate {
@@ -309,6 +330,7 @@ export interface V1Candidate {
   gender: V1Gender;
   id: string;
   name: string;
+  resumeFile?: V1File;
   surname: string;
   tenantId: string;
   /** @format int64 */
@@ -339,12 +361,12 @@ export interface V1CreateAccountRequestPayload {
 }
 
 export interface V1CreateAccountRequestPayloadPhotoFiles {
-  originalFileId: string;
-  s100x100FileId: string;
+  originalFileId?: string;
+  s100x100FileId?: string;
 }
 
 export interface V1CreateAccountResponse {
-  item?: V1AccountTenant;
+  item: V1AccountTenant;
 }
 
 export interface V1CreateCandidateRequest {
@@ -352,14 +374,19 @@ export interface V1CreateCandidateRequest {
 }
 
 export interface V1CreateCandidateRequestPayload {
-  birthday?: V1OptionalDate;
+  birthday: V1OptionalDate;
   gender: V1Gender;
   name: string;
+  resumeFiles?: V1CreateCandidateRequestPayloadResumeFiles;
   surname: string;
 }
 
+export interface V1CreateCandidateRequestPayloadResumeFiles {
+  fileId?: string;
+}
+
 export interface V1CreateCandidateResponse {
-  item?: V1Candidate;
+  item: V1Candidate;
 }
 
 export interface V1CreateProfileRequest {
@@ -367,12 +394,13 @@ export interface V1CreateProfileRequest {
 }
 
 export interface V1CreateProfileRequestPayload {
+  description: string;
   name: string;
-  personalityTraits?: V1ProfilePersonalityTraitsMap;
+  personalityTraits: V1ProfilePersonalityTraitsMap;
 }
 
 export interface V1CreateProfileResponse {
-  item?: V1TestingProfile;
+  item: V1TestingProfile;
 }
 
 export interface V1CreateRoomRequest {
@@ -385,7 +413,7 @@ export interface V1CreateRoomRequestPayload {
 }
 
 export interface V1CreateRoomResponse {
-  item?: V1TestingRoom;
+  item: V1TestingRoom;
 }
 
 export type V1DeleteCandidateResponse = object;
@@ -421,18 +449,29 @@ export interface V1FinishRegistrationResponse {
   url: string;
 }
 
-export interface V1FinishRoomRequestPayload {
-  answers?: V1Answers;
+export interface V1GenerateProfileDescriptionByNameRequest {
+  name: string;
 }
 
-export type V1FinishRoomResponse = object;
+export interface V1GenerateProfileDescriptionByNameResponse {
+  description: string;
+}
+
+export interface V1GenerateProfileTraitsMapByDescriptionRequest {
+  description: string;
+  name: string;
+}
+
+export interface V1GenerateProfileTraitsMapByDescriptionResponse {
+  traits: V1ProfilePersonalityTraitsMap;
+}
 
 export interface V1GetAccountResponse {
-  item?: V1AccountTenant;
+  item: V1AccountTenant;
 }
 
 export interface V1GetCandidateResponse {
-  item?: V1Candidate;
+  item: V1Candidate;
 }
 
 export interface V1GetPersonalityTraitsResponse {
@@ -440,7 +479,7 @@ export interface V1GetPersonalityTraitsResponse {
 }
 
 export interface V1GetProfileResponse {
-  item?: V1TestingProfile;
+  item: V1TestingProfile;
 }
 
 export type V1IsExistsResponse = object;
@@ -497,9 +536,9 @@ export interface V1LoginRequest {
 }
 
 export interface V1LoginResponse {
-  account?: V1AccountTenant;
-  tenant?: V1Tenant;
-  tokens?: V1Tokens;
+  account: V1AccountTenant;
+  tenant: V1Tenant;
+  tokens: V1Tokens;
 }
 
 export type V1LogoutRequest = object;
@@ -532,23 +571,30 @@ export interface V1PatchAccountRequestPayload {
 }
 
 export interface V1PatchAccountRequestPayloadPhotoFiles {
-  originalFileId: string;
-  s100x100FileId: string;
+  originalFileId?: string;
+  s100x100FileId?: string;
 }
 
 export type V1PatchAccountResponse = object;
 
 export interface V1PatchCandidateRequestPayload {
   birthday?: V1OptionalDate;
-  gender: V1Gender;
-  name: string;
-  surname: string;
+  gender?: V1Gender;
+  name?: string;
+  resumeFiles?: V1PatchCandidateRequestPayloadResumeFiles;
+  resumeFilesClear?: boolean;
+  surname?: string;
+}
+
+export interface V1PatchCandidateRequestPayloadResumeFiles {
+  fileId?: string;
 }
 
 export type V1PatchCandidateResponse = object;
 
 export interface V1PatchProfileRequestPayload {
-  name: string;
+  description?: string;
+  name?: string;
   personalityTraits?: V1ProfilePersonalityTraitsMap;
 }
 
@@ -570,6 +616,8 @@ export interface V1PersonalityTrait {
   type: V1PersonalityTraitType;
 }
 
+export type V1ProcessRoomResponse = object;
+
 export interface V1ProfilePersonalityTraitsMap {
   map?: Record<string, V1ProfilePersonalityTraitsMapItem>;
 }
@@ -585,7 +633,7 @@ export interface V1RefreshRequest {
 }
 
 export interface V1RefreshResponse {
-  tokens?: V1Tokens;
+  tokens: V1Tokens;
 }
 
 export interface V1RequestPasswordRecoveryRequest {
@@ -598,10 +646,12 @@ export interface V1RequestPasswordRecoveryResponse {
 }
 
 export interface V1Room {
-  candidate?: V1RoomCandidate;
+  candidate: V1RoomCandidate;
+  currentQuestion: V1RoomTechniqueItem;
+  /** @format int32 */
+  currentQuestionIndex?: number;
   id: string;
   status: V1RoomStatus;
-  techniqueData?: V1RoomTechniqueItem[];
   tenantName: string;
 }
 
@@ -621,6 +671,10 @@ export interface V1StartRegistrationRequest {
 
 export type V1StartRegistrationResponse = object;
 
+export interface V1StartRoomResponse {
+  room: V1Room;
+}
+
 export interface V1Tenant {
   id: string;
   name: string;
@@ -639,9 +693,19 @@ export interface V1TestingListProfile {
 
 export interface V1TestingListRoom {
   candidate?: V1TestingRoomCandidate;
+  /** @format date-time */
+  createdAt: string;
+  /** @format int32 */
+  durationSec?: number;
+  /** @format date-time */
+  finishedAt?: string;
+  hiringDecision?: V1TestingRoomResultAnalyzeHiringDecision;
   id: string;
   profile?: V1TestingRoomProfile;
-  result?: V1TestingRoomResult;
+  /** @format int32 */
+  resultIndex?: number;
+  /** @format date-time */
+  startedAt?: string;
   status: V1RoomStatus;
   tenantId: string;
   /** @format int64 */
@@ -649,9 +713,10 @@ export interface V1TestingListRoom {
 }
 
 export interface V1TestingProfile {
+  description: string;
   id: string;
   name: string;
-  personalityTraits?: V1ProfilePersonalityTraitsMap;
+  personalityTraits: V1ProfilePersonalityTraitsMap;
   tenantId: string;
   /** @format int64 */
   version: string;
@@ -659,10 +724,20 @@ export interface V1TestingProfile {
 
 export interface V1TestingRoom {
   candidate?: V1TestingRoomCandidate;
+  /** @format date-time */
+  createdAt: string;
+  /** @format int32 */
+  durationSec?: number;
+  /** @format date-time */
+  finishedAt?: string;
   id: string;
-  personalityTraits?: V1ProfilePersonalityTraitsMap;
+  personalityTraits: V1ProfilePersonalityTraitsMap;
   profile?: V1TestingRoomProfile;
   result?: V1TestingRoomResult;
+  /** @format int32 */
+  resultIndex?: number;
+  /** @format date-time */
+  startedAt?: string;
   status: V1RoomStatus;
   tenantId: string;
   /** @format int64 */
@@ -681,10 +756,29 @@ export interface V1TestingRoomProfile {
 }
 
 export interface V1TestingRoomResult {
+  analyze?: V1TestingRoomResultAnalyze;
   /** @format float */
   totalMatch: number;
   totalMatchTip: string;
   traits?: Record<string, V1TestingRoomResultTrait>;
+}
+
+export interface V1TestingRoomResultAnalyze {
+  actionItems?: string[];
+  /** @format float */
+  confidenceScore: number;
+  hiringDecision: V1TestingRoomResultAnalyzeHiringDecision;
+  mainRecomendation: string;
+  personalityFit: V1TestingRoomResultAnalyzePersonalityFit;
+  risks?: string[];
+}
+
+export interface V1TestingRoomResultAnalyzePersonalityFit {
+  keyGaps?: string[];
+  keyMatches?: string[];
+  /** @format int32 */
+  score: number;
+  summary: string;
 }
 
 export interface V1TestingRoomResultTrait {
@@ -727,8 +821,8 @@ export interface V1UpdateMyProfileRequestPayload {
 }
 
 export interface V1UpdateMyProfileRequestPayloadPhotoFiles {
-  originalFileId: string;
-  s100x100FileId: string;
+  originalFileId?: string;
+  s100x100FileId?: string;
 }
 
 export type V1UpdateMyProfileResponse = object;
@@ -749,7 +843,7 @@ export interface V1UploadCandidateResumeFileRequest {
 }
 
 export interface V1UploadCandidateResumeFileResponse {
-  data?: V1FilesMap;
+  data: V1FilesMap;
 }
 
 export interface V1UploadProfilePhotoFileRequest {
@@ -759,12 +853,12 @@ export interface V1UploadProfilePhotoFileRequest {
 }
 
 export interface V1UploadProfilePhotoFileResponse {
-  data?: V1FilesMap;
+  data: V1FilesMap;
 }
 
 export interface V1WhoIAmResponse {
-  account?: V1AccountTenant;
-  tenant?: V1Tenant;
+  account: V1AccountTenant;
+  tenant: V1Tenant;
 }
 
 import { ApiError, tryToCatchApiErrors } from "~/shared/errors/errors";
@@ -1202,17 +1296,39 @@ export class Api<
      * No description
      *
      * @tags RoomsPublicService
-     * @name RoomsPublicServiceFinishRoom
-     * @summary Завершить комнату
-     * @request POST:/v1/rooms/{id}/finish
+     * @name RoomsPublicServiceAnswer
+     * @summary Ответить на вопрос
+     * @request POST:/v1/rooms/{id}/answer
      */
-    roomsPublicServiceFinishRoom: (
+    roomsPublicServiceAnswer: (
       id: string,
-      body: RoomsPublicServiceFinishRoomBody,
+      body: RoomsPublicServiceAnswerBody,
       params: RequestParams = {},
     ) =>
-      this.request<V1FinishRoomResponse, ApiError>({
-        path: `/v1/rooms/${id}/finish`,
+      this.request<V1AnswerResponse, ApiError>({
+        path: `/v1/rooms/${id}/answer`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags RoomsPublicService
+     * @name RoomsPublicServiceStartRoom
+     * @summary Начать комнату
+     * @request POST:/v1/rooms/{id}/start
+     */
+    roomsPublicServiceStartRoom: (
+      id: string,
+      body: RoomsPublicServiceStartRoomBody,
+      params: RequestParams = {},
+    ) =>
+      this.request<V1StartRoomResponse, ApiError>({
+        path: `/v1/rooms/${id}/start`,
         method: "POST",
         body: body,
         type: ContentType.Json,
@@ -1670,6 +1786,50 @@ export class Api<
      * No description
      *
      * @tags TestingPublicService
+     * @name TestingPublicServiceGenerateProfileDescriptionByName
+     * @request POST:/v1/testing/profiles/generate-profile-description-by-name
+     * @secure
+     */
+    testingPublicServiceGenerateProfileDescriptionByName: (
+      body: V1GenerateProfileDescriptionByNameRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<V1GenerateProfileDescriptionByNameResponse, ApiError>({
+        path: `/v1/testing/profiles/generate-profile-description-by-name`,
+        method: "POST",
+        body: body,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags TestingPublicService
+     * @name TestingPublicServiceGenerateProfileTraitsMapByDescription
+     * @request POST:/v1/testing/profiles/generate-profile-traits-map-by-description
+     * @secure
+     */
+    testingPublicServiceGenerateProfileTraitsMapByDescription: (
+      body: V1GenerateProfileTraitsMapByDescriptionRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<V1GenerateProfileTraitsMapByDescriptionResponse, ApiError>({
+        path: `/v1/testing/profiles/generate-profile-traits-map-by-description`,
+        method: "POST",
+        body: body,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags TestingPublicService
      * @name TestingPublicServiceDeleteProfile
      * @summary Удалить профиль профессии
      * @request DELETE:/v1/testing/profiles/{id}
@@ -1744,6 +1904,14 @@ export class Api<
         limit?: string;
         /** @format uint64 */
         offset?: string;
+        /** @default "LIST_ROOM_SORT_UNSPECIFIED" */
+        sort?:
+          | "LIST_ROOM_SORT_UNSPECIFIED"
+          | "LIST_ROOM_SORT_CREATED_AT"
+          | "LIST_ROOM_SORT_FINISHED_AT"
+          | "LIST_ROOM_SORT_RESULT_INDEX";
+        filterCandidateId?: string;
+        filterProfileId?: string;
       },
       params: RequestParams = {},
     ) =>
@@ -1810,6 +1978,24 @@ export class Api<
       this.request<TestingV1GetRoomResponse, ApiError>({
         path: `/v1/testing/rooms/${id}`,
         method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags TestingPublicService
+     * @name TestingPublicServiceProcessRoom
+     * @summary Обработать результаты комнаты
+     * @request POST:/v1/testing/rooms/{id}/process
+     * @secure
+     */
+    testingPublicServiceProcessRoom: (id: string, params: RequestParams = {}) =>
+      this.request<V1ProcessRoomResponse, ApiError>({
+        path: `/v1/testing/rooms/${id}/process`,
+        method: "POST",
         secure: true,
         format: "json",
         ...params,
